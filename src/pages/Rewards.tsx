@@ -9,6 +9,7 @@ import { Loader, Link, Unlink } from 'lucide-react';
 
 const Rewards = () => {
   const { 
+    balance,
     stakedAmount, 
     rewards, 
     isStaking, 

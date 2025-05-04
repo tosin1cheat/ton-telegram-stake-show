@@ -16,6 +16,11 @@ interface StakingContextType {
   claimRewards: () => void;
   copyReferralLink: () => void;
   timeRemaining: string;
+  walletConnected: boolean;
+  walletAddress: string | null;
+  connectWallet: () => void;
+  disconnectWallet: () => void;
+  isLoading: boolean;
 }
 
 const StakingContext = createContext<StakingContextType>({
@@ -32,6 +37,11 @@ const StakingContext = createContext<StakingContextType>({
   claimRewards: () => {},
   copyReferralLink: () => {},
   timeRemaining: '',
+  walletConnected: false,
+  walletAddress: null,
+  connectWallet: () => {},
+  disconnectWallet: () => {},
+  isLoading: false,
 });
 
 export const useStaking = () => useContext(StakingContext);
@@ -46,6 +56,9 @@ export const StakingProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [referrals, setReferrals] = useState(0);
   const [referralBonus, setReferralBonus] = useState(0);
   const [timeRemaining, setTimeRemaining] = useState('');
+  const [walletConnected, setWalletConnected] = useState(false);
+  const [walletAddress, setWalletAddress] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Generate a unique referral code on initial load
   useEffect(() => {
@@ -84,6 +97,7 @@ export const StakingProvider: React.FC<{ children: React.ReactNode }> = ({ child
           setTimeRemaining(`${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`);
         } else {
           setTimeRemaining('00:00:00');
+          setIsLoading(false); // Ensure loading is turned off when time is up
         }
         
         // End staking when time is up
@@ -98,22 +112,61 @@ export const StakingProvider: React.FC<{ children: React.ReactNode }> = ({ child
     };
   }, [isStaking, stakingEndTime]);
 
-  const stakeTokens = () => {
-    if (balance < 2) {
-      toast.error("Insufficient balance to stake");
+  const connectWallet = () => {
+    setIsLoading(true);
+    // Simulate wallet connection delay
+    setTimeout(() => {
+      const mockAddress = '0x' + Math.random().toString(36).substring(2, 15);
+      setWalletAddress(mockAddress);
+      setWalletConnected(true);
+      setIsLoading(false);
+      toast.success("Wallet connected successfully");
+    }, 1500);
+  };
+  
+  const disconnectWallet = () => {
+    if (isStaking) {
+      toast.error("Cannot disconnect wallet while staking is active");
       return;
     }
     
-    setBalance((prevBalance) => prevBalance - 2);
-    setStakedAmount(2);
-    setIsStaking(true);
+    setIsLoading(true);
+    // Simulate wallet disconnection delay
+    setTimeout(() => {
+      setWalletAddress(null);
+      setWalletConnected(false);
+      setIsLoading(false);
+      toast.success("Wallet disconnected");
+    }, 1000);
+  };
+
+  const stakeTokens = () => {
+    if (!walletConnected) {
+      toast.error("Please connect your wallet first");
+      return;
+    }
     
-    // Set staking end time to 4 hours from now for demo
-    // In real demo, we'll use 4 minutes instead of 4 hours
-    const endTime = Date.now() + 4 * 60 * 1000; // 4 minutes in ms
-    setStakingEndTime(endTime);
+    if (balance < 2.5) { // 2 TON + 0.5 TON fee
+      toast.error("Insufficient balance to stake (2 TON + 0.5 TON fee)");
+      return;
+    }
     
-    toast.success("Successfully staked 2 TON");
+    setIsLoading(true);
+    
+    // Simulate transaction delay
+    setTimeout(() => {
+      setBalance((prevBalance) => prevBalance - 2.5); // 2 TON stake + 0.5 TON fee
+      setStakedAmount(2);
+      setIsStaking(true);
+      
+      // Set staking end time to 4 hours from now for demo
+      // In real demo, we'll use 4 minutes instead of 4 hours
+      const endTime = Date.now() + 4 * 60 * 1000; // 4 minutes in ms
+      setStakingEndTime(endTime);
+      
+      setIsLoading(false);
+      toast.success("Successfully staked 2 TON (0.5 TON fee applied)");
+    }, 2000);
   };
 
   const unstakeTokens = () => {
@@ -122,26 +175,56 @@ export const StakingProvider: React.FC<{ children: React.ReactNode }> = ({ child
       return;
     }
     
-    setBalance((prevBalance) => prevBalance + stakedAmount + rewards);
-    setStakedAmount(0);
-    setRewards(0);
-    setIsStaking(false);
-    setStakingEndTime(null);
+    if (Date.now() < stakingEndTime) {
+      toast.error("Cannot unstake before staking period is complete");
+      return;
+    }
     
-    toast.success(`Successfully unstaked ${stakedAmount} TON and ${rewards.toFixed(4)} TON rewards`);
+    setIsLoading(true);
+    
+    // Simulate transaction delay
+    setTimeout(() => {
+      // Apply withdrawal fee of 0.5 TON
+      const withdrawalAmount = stakedAmount + rewards - 0.5;
+      
+      setBalance((prevBalance) => prevBalance + withdrawalAmount);
+      setStakedAmount(0);
+      setRewards(0);
+      setIsStaking(false);
+      setStakingEndTime(null);
+      
+      setIsLoading(false);
+      toast.success(`Successfully unstaked ${stakedAmount} TON and ${rewards.toFixed(4)} TON rewards (0.5 TON fee applied)`);
+    }, 2000);
   };
 
   const claimRewards = () => {
+    if (!isStaking || !stakingEndTime) {
+      toast.error("No active staking to claim rewards from");
+      return;
+    }
+    
+    if (Date.now() < stakingEndTime) {
+      toast.error("Cannot claim rewards before staking period is complete");
+      return;
+    }
+    
     if (rewards <= 0) {
       toast.error("No rewards to claim");
       return;
     }
     
-    setBalance((prevBalance) => prevBalance + rewards);
-    const claimedRewards = rewards;
-    setRewards(0);
+    setIsLoading(true);
     
-    toast.success(`Successfully claimed ${claimedRewards.toFixed(4)} TON rewards`);
+    // Simulate transaction delay
+    setTimeout(() => {
+      setBalance((prevBalance) => prevBalance + rewards - 0.5); // Apply 0.5 TON fee
+      const claimedRewards = rewards;
+      setRewards(0);
+      
+      setIsLoading(false);
+      toast.success(`Successfully claimed ${claimedRewards.toFixed(4)} TON rewards (0.5 TON fee applied)`);
+    }, 2000);
   };
 
   const copyReferralLink = () => {
@@ -164,6 +247,11 @@ export const StakingProvider: React.FC<{ children: React.ReactNode }> = ({ child
     claimRewards,
     copyReferralLink,
     timeRemaining,
+    walletConnected,
+    walletAddress,
+    connectWallet,
+    disconnectWallet,
+    isLoading,
   };
 
   return (

@@ -45,11 +45,15 @@
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
+  html {
+    @apply dark;
+  }
+
   .dark {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
 
-    --card: 222.2 84% 4.9%;
+    --card: 230 25% 11%;
     --card-foreground: 210 40% 98%;
 
     --popover: 222.2 84% 4.9%;
@@ -67,13 +71,13 @@
     --accent: 201 100% 35%;
     --accent-foreground: 210 40% 98%;
 
-    --destructive: 0 62.8% 30.6%;
+    --destructive: 0 62.8% 50.6%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 217.2 32.6% 17.5%;
+    --border: 217.2 32.6% 25.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
+    --sidebar-background: 230 30% 8%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 201 100% 45%;
     --sidebar-primary-foreground: 0 0% 100%;
@@ -96,18 +100,63 @@
 
 @layer components {
   .ton-card {
-    @apply bg-white rounded-2xl shadow-lg p-6 border border-gray-100 transition-all hover:shadow-xl;
+    @apply bg-card text-card-foreground rounded-2xl shadow-lg p-6 border border-border transition-all hover:shadow-xl;
   }
 
   .ton-input {
-    @apply w-full bg-muted rounded-xl py-3 px-4 border border-border focus:border-ton-primary focus:ring-1 focus:ring-ton-primary focus:outline-none;
+    @apply w-full bg-muted rounded-xl py-3 px-4 border border-border focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none;
   }
 
   .ton-button {
-    @apply bg-ton-gradient text-white font-medium rounded-xl py-3 px-6 transition-all hover:opacity-90 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply bg-primary text-primary-foreground font-medium rounded-xl py-3 px-6 transition-all hover:bg-primary/90 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed;
   }
   
   .ton-button-outline {
-    @apply border-2 border-ton-primary text-ton-primary font-medium rounded-xl py-3 px-6 transition-all hover:bg-ton-light active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply border-2 border-primary text-primary font-medium rounded-xl py-3 px-6 transition-all hover:bg-primary/20 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 5px 2px rgba(0, 152, 234, 0.3);
+  }
+  50% {
+    opacity: 0.85;
+    box-shadow: 0 0 15px 5px rgba(0, 152, 234, 0.6);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@layer utilities {
+  .animate-fade-in {
+    animation: fade-in 0.4s ease-out forwards;
+  }
+  
+  .animate-pulse-glow {
+    animation: pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  .animate-float {
+    animation: float 5s ease-in-out infinite;
   }
 }

@@ -128,7 +128,7 @@ const Stake = () => {
                     variant="outline" 
                     className="border-primary text-primary hover:bg-primary/20" 
                     onClick={unstakeTokens}
-                    disabled={!canUnstake || isLoading}
+                    disabled={!canUnstake || isLoading || balance < 0.5}
                   >
                     {isLoading ? <Loader className="animate-spin mr-2" size={16} /> : null}
                     {canUnstake ? "Unstake" : "Locked"}
@@ -136,7 +136,7 @@ const Stake = () => {
                   <Button 
                     className="bg-primary text-primary-foreground" 
                     onClick={claimRewards}
-                    disabled={(!canUnstake && isStaking) || rewards <= 0 || isLoading}
+                    disabled={(!canUnstake && isStaking) || rewards <= 0 || isLoading || balance < 0.5}
                   >
                     {isLoading ? <Loader className="animate-spin mr-2" size={16} /> : null}
                     Claim Rewards
@@ -145,6 +145,11 @@ const Stake = () => {
                 {!canUnstake && isStaking && (
                   <p className="text-muted-foreground text-xs mt-2 text-center">
                     Staking is locked until the countdown reaches zero
+                  </p>
+                )}
+                {canUnstake && balance < 0.5 && (
+                  <p className="text-destructive text-xs mt-2 text-center">
+                    Insufficient balance for 0.5 TON withdrawal fee
                   </p>
                 )}
               </div>
@@ -163,19 +168,19 @@ const Stake = () => {
                 </div>
                 <div className="flex justify-between items-center mb-3">
                   <p className="text-muted-foreground">Stake Fee</p>
-                  <p className="text-destructive font-semibold">0.5 TON</p>
+                  <p className="text-destructive font-semibold">0.5 TON <span className="text-xs">(from wallet)</span></p>
                 </div>
                 <div className="flex justify-between items-center mb-3">
                   <p className="text-muted-foreground">Withdraw Fee</p>
-                  <p className="text-destructive font-semibold">0.5 TON</p>
+                  <p className="text-destructive font-semibold">0.5 TON <span className="text-xs">(from wallet)</span></p>
                 </div>
                 <div className="flex justify-between items-center mb-3">
-                  <p className="text-muted-foreground">Expected Return</p>
+                  <p className="text-muted-foreground">Expected Reward</p>
                   <p className="text-primary font-semibold">+2 TON (100%)</p>
                 </div>
                 <div className="flex justify-between items-center mb-4">
-                  <p className="text-muted-foreground">Total Return</p>
-                  <p className="font-bold">3 TON <span className="text-xs text-muted-foreground">(after fees)</span></p>
+                  <p className="text-muted-foreground">Total Cost Now</p>
+                  <p className="font-bold">2.5 TON <span className="text-xs text-muted-foreground">(2 TON + 0.5 TON fee)</span></p>
                 </div>
                 <Button 
                   className="bg-primary text-primary-foreground w-full" 
@@ -242,7 +247,7 @@ const Stake = () => {
             </div>
             <div>
               <h3 className="font-medium mb-1">Are there any fees?</h3>
-              <p className="text-sm text-muted-foreground">Yes, there's a 0.5 TON fee for staking and a 0.5 TON fee for withdrawals.</p>
+              <p className="text-sm text-muted-foreground">Yes, there's a 0.5 TON fee for staking and a 0.5 TON fee for withdrawals, both paid from your wallet.</p>
             </div>
           </div>
         </div>

@@ -159,8 +159,7 @@ export const StakingProvider: React.FC<{ children: React.ReactNode }> = ({ child
       setStakedAmount(2);
       setIsStaking(true);
       
-      // Set staking end time to 4 hours from now for demo
-      // In real demo, we'll use 4 minutes instead of 4 hours
+      // Set staking end time to 4 minutes from now for demo
       const endTime = Date.now() + 4 * 60 * 1000; // 4 minutes in ms
       setStakingEndTime(endTime);
       
@@ -180,14 +179,17 @@ export const StakingProvider: React.FC<{ children: React.ReactNode }> = ({ child
       return;
     }
     
+    if (balance < 0.5) {
+      toast.error("Insufficient balance for withdrawal fee (0.5 TON)");
+      return;
+    }
+    
     setIsLoading(true);
     
     // Simulate transaction delay
     setTimeout(() => {
-      // Apply withdrawal fee of 0.5 TON
-      const withdrawalAmount = stakedAmount + rewards - 0.5;
-      
-      setBalance((prevBalance) => prevBalance + withdrawalAmount);
+      // Apply withdrawal fee from wallet balance
+      setBalance((prevBalance) => prevBalance - 0.5 + stakedAmount + rewards);
       setStakedAmount(0);
       setRewards(0);
       setIsStaking(false);
@@ -214,11 +216,17 @@ export const StakingProvider: React.FC<{ children: React.ReactNode }> = ({ child
       return;
     }
     
+    if (balance < 0.5) {
+      toast.error("Insufficient balance for claim fee (0.5 TON)");
+      return;
+    }
+    
     setIsLoading(true);
     
     // Simulate transaction delay
     setTimeout(() => {
-      setBalance((prevBalance) => prevBalance + rewards - 0.5); // Apply 0.5 TON fee
+      // Fee is taken from wallet, rewards are added directly
+      setBalance((prevBalance) => prevBalance - 0.5 + rewards);
       const claimedRewards = rewards;
       setRewards(0);
       

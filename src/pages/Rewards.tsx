@@ -88,7 +88,7 @@ const Rewards = () => {
           <Button 
             className="bg-primary text-primary-foreground"
             onClick={claimRewards}
-            disabled={totalRewards <= 0 || !canClaimRewards || isLoading}
+            disabled={totalRewards <= 0 || !canClaimRewards || isLoading || balance < 0.5}
           >
             {isLoading ? <Loader className="animate-spin mr-2" size={16} /> : null}
             Claim All Rewards
@@ -96,6 +96,11 @@ const Rewards = () => {
           {isStaking && !canClaimRewards && (
             <p className="text-destructive text-xs mt-2">
               Rewards can only be claimed after staking period ends
+            </p>
+          )}
+          {canClaimRewards && balance < 0.5 && (
+            <p className="text-destructive text-xs mt-2">
+              Insufficient balance for 0.5 TON claim fee
             </p>
           )}
         </div>
@@ -120,7 +125,7 @@ const Rewards = () => {
               </div>
               <div className="flex justify-between items-center mb-3">
                 <p className="text-muted-foreground">Withdrawal Fee</p>
-                <p className="text-destructive font-semibold">0.5 TON</p>
+                <p className="text-destructive font-semibold">0.5 TON <span className="text-xs">(from wallet)</span></p>
               </div>
               
               <Progress value={progressPercentage} className="h-2 mb-2" />

@@ -10,7 +10,6 @@ export interface StakingContextType {
   referralBonus: number;
   stakeTokens: () => void;
   unstakeTokens: () => void;
-  claimRewards: () => void;
   copyReferralLink: () => void;
   timeRemaining: string;
   walletConnected: boolean;

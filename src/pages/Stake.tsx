@@ -16,7 +16,6 @@ const Stake = () => {
     isStaking, 
     stakeTokens, 
     unstakeTokens,
-    claimRewards,
     timeRemaining,
     walletConnected,
     walletAddress,
@@ -123,25 +122,14 @@ const Stake = () => {
                   <span className="font-medium text-primary animate-pulse">{timeRemaining}</span>
                   <span>2 TON</span>
                 </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <Button 
-                    variant="outline" 
-                    className="border-primary text-primary hover:bg-primary/20" 
-                    onClick={unstakeTokens}
-                    disabled={!canUnstake || isLoading || balance < 0.5}
-                  >
-                    {isLoading ? <Loader className="animate-spin mr-2" size={16} /> : null}
-                    {canUnstake ? "Unstake" : "Locked"}
-                  </Button>
-                  <Button 
-                    className="bg-primary text-primary-foreground" 
-                    onClick={claimRewards}
-                    disabled={(!canUnstake && isStaking) || rewards <= 0 || isLoading || balance < 0.5}
-                  >
-                    {isLoading ? <Loader className="animate-spin mr-2" size={16} /> : null}
-                    Claim Rewards
-                  </Button>
-                </div>
+                <Button 
+                  className="bg-primary text-primary-foreground w-full" 
+                  onClick={unstakeTokens}
+                  disabled={!canUnstake || isLoading || balance < 0.5}
+                >
+                  {isLoading ? <Loader className="animate-spin mr-2" size={16} /> : null}
+                  {canUnstake ? "Unstake with Rewards" : "Locked"}
+                </Button>
                 {!canUnstake && isStaking && (
                   <p className="text-muted-foreground text-xs mt-2 text-center">
                     Staking is locked until the countdown reaches zero
@@ -164,7 +152,7 @@ const Stake = () => {
                 </div>
                 <div className="flex justify-between items-center mb-3">
                   <p className="text-muted-foreground">Duration</p>
-                  <p className="font-semibold">4 minutes</p>
+                  <p className="font-semibold">60 seconds <span className="text-xs text-muted-foreground">(simulates 6 hours)</span></p>
                 </div>
                 <div className="flex justify-between items-center mb-3">
                   <p className="text-muted-foreground">Stake Fee</p>
@@ -239,7 +227,7 @@ const Stake = () => {
             </div>
             <div>
               <h3 className="font-medium mb-1">How long is the staking period?</h3>
-              <p className="text-sm text-muted-foreground">The staking period is 4 minutes for demonstration purposes.</p>
+              <p className="text-sm text-muted-foreground">The staking period is 60 seconds for demonstration purposes (represents 6 hours).</p>
             </div>
             <div>
               <h3 className="font-medium mb-1">Can I withdraw early?</h3>

@@ -28,13 +28,13 @@ export const useStakingLogic = ({
     if (isStaking && stakingEndTime) {
       intervalId = window.setInterval(() => {
         const now = Date.now();
-        const elapsed = now - (stakingEndTime - 4 * 60 * 60 * 1000); // 4 hours in ms
-        const totalDuration = 4 * 60 * 60 * 1000; // 4 hours in ms
+        const elapsed = now - (stakingEndTime - 60 * 1000); // 60 seconds in ms (representing 6 hours)
+        const totalDuration = 60 * 1000; // 60 seconds in ms
         
         // Calculate progress (0 to 1)
         const progress = Math.min(elapsed / totalDuration, 1);
         
-        // Calculate rewards based on progress (from 0 to 2 TON)
+        // Calculate rewards based on progress (from 0 to 2 TON - 2x return)
         const calculatedRewards = 2 * progress;
         setRewards(parseFloat(calculatedRewards.toFixed(4)));
         
@@ -81,8 +81,8 @@ export const useStakingLogic = ({
       setStakedAmount(2);
       setIsStaking(true);
       
-      // Set staking end time to 4 minutes from now for demo
-      const endTime = Date.now() + 4 * 60 * 1000; // 4 minutes in ms
+      // Set staking end time to 60 seconds from now for demo
+      const endTime = Date.now() + 60 * 1000; // 60 seconds in ms
       setStakingEndTime(endTime);
       
       setIsLoading(false);
@@ -110,7 +110,7 @@ export const useStakingLogic = ({
     
     // Simulate transaction delay
     setTimeout(() => {
-      // Apply withdrawal fee from wallet balance
+      // Apply withdrawal fee from wallet balance and return both principal and rewards
       setBalance((prevBalance) => prevBalance - 0.5 + stakedAmount + rewards);
       setStakedAmount(0);
       setRewards(0);
@@ -122,40 +122,7 @@ export const useStakingLogic = ({
     }, 2000);
   };
 
-  const claimRewards = () => {
-    if (!isStaking || !stakingEndTime) {
-      toast.error("No active staking to claim rewards from");
-      return;
-    }
-    
-    if (Date.now() < stakingEndTime) {
-      toast.error("Cannot claim rewards before staking period is complete");
-      return;
-    }
-    
-    if (rewards <= 0) {
-      toast.error("No rewards to claim");
-      return;
-    }
-    
-    if (balance < 0.5) {
-      toast.error("Insufficient balance for claim fee (0.5 TON)");
-      return;
-    }
-    
-    setIsLoading(true);
-    
-    // Simulate transaction delay
-    setTimeout(() => {
-      // Fee is taken from wallet, rewards are added directly
-      setBalance((prevBalance) => prevBalance - 0.5 + rewards);
-      const claimedRewards = rewards;
-      setRewards(0);
-      
-      setIsLoading(false);
-      toast.success(`Successfully claimed ${claimedRewards.toFixed(4)} TON rewards (0.5 TON fee applied)`);
-    }, 2000);
-  };
+  // Remove the separate claimRewards function since we're consolidating functionality into unstakeTokens
   
   return {
     stakedAmount,
@@ -165,6 +132,5 @@ export const useStakingLogic = ({
     timeRemaining,
     stakeTokens,
     unstakeTokens,
-    claimRewards
   };
 };

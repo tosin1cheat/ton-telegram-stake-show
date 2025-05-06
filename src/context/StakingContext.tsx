@@ -17,7 +17,6 @@ const defaultValues: StakingContextType = {
   referralBonus: 0,
   stakeTokens: () => {},
   unstakeTokens: () => {},
-  claimRewards: () => {},
   copyReferralLink: () => {},
   timeRemaining: '',
   walletConnected: false,
@@ -58,7 +57,6 @@ export const StakingProvider: React.FC<{ children: React.ReactNode }> = ({ child
     timeRemaining, 
     stakeTokens, 
     unstakeTokens, 
-    claimRewards 
   } = useStakingLogic({ 
     balance, 
     setBalance, 
@@ -80,7 +78,6 @@ export const StakingProvider: React.FC<{ children: React.ReactNode }> = ({ child
     referralBonus,
     stakeTokens,
     unstakeTokens,
-    claimRewards,
     copyReferralLink,
     timeRemaining,
     walletConnected,

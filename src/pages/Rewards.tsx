@@ -13,7 +13,7 @@ const Rewards = () => {
     stakedAmount, 
     rewards, 
     isStaking, 
-    claimRewards, 
+    unstakeTokens,
     referrals,
     referralBonus,
     timeRemaining,
@@ -26,7 +26,7 @@ const Rewards = () => {
 
   const totalRewards = rewards + referralBonus;
   const progressPercentage = (rewards / 2) * 100;
-  const canClaimRewards = isStaking && Date.now() >= (useStaking().stakingEndTime || 0);
+  const canUnstake = isStaking && Date.now() >= (useStaking().stakingEndTime || 0);
 
   return (
     <div className="min-h-screen bg-sidebar text-sidebar-foreground pt-16 pb-20">
@@ -86,22 +86,30 @@ const Rewards = () => {
           <p className="text-muted-foreground text-sm mb-4">
             From Staking & Referrals
           </p>
-          <Button 
-            className="bg-primary text-primary-foreground"
-            onClick={claimRewards}
-            disabled={totalRewards <= 0 || !canClaimRewards || isLoading || balance < 0.5}
-          >
-            {isLoading ? <Loader className="animate-spin mr-2" size={16} /> : null}
-            Claim All Rewards
-          </Button>
-          {isStaking && !canClaimRewards && (
+          {canUnstake && rewards > 0 ? (
+            <Button 
+              className="bg-primary text-primary-foreground"
+              onClick={unstakeTokens}
+              disabled={balance < 0.5}
+            >
+              {isLoading ? <Loader className="animate-spin mr-2" size={16} /> : null}
+              Unstake with Rewards
+            </Button>
+          ) : (
+            <RouterLink to="/stake">
+              <Button className="bg-primary text-primary-foreground">
+                Go to Staking
+              </Button>
+            </RouterLink>
+          )}
+          {isStaking && !canUnstake && (
             <p className="text-destructive text-xs mt-2">
               Rewards can only be claimed after staking period ends
             </p>
           )}
-          {canClaimRewards && balance < 0.5 && (
+          {canUnstake && balance < 0.5 && (
             <p className="text-destructive text-xs mt-2">
-              Insufficient balance for 0.5 TON claim fee
+              Insufficient balance for 0.5 TON withdrawal fee
             </p>
           )}
         </div>

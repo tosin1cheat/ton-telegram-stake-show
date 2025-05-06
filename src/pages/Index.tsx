@@ -1,21 +1,21 @@
-
 import React from 'react';
 import Navigation from '@/components/Navigation';
 import { useStaking } from '@/context/StakingContext';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-
 const Index = () => {
-  const { balance, stakedAmount, rewards, isStaking, timeRemaining } = useStaking();
-
-  return (
-    <div className="min-h-screen bg-gray-50 pt-16 pb-20">
+  const {
+    balance,
+    stakedAmount,
+    rewards,
+    isStaking,
+    timeRemaining
+  } = useStaking();
+  return <div className="min-h-screen bg-gray-50 pt-16 pb-20">
       <div className="max-w-md mx-auto px-4">
         <div className="mb-8 mt-4">
           <h1 className="text-2xl font-bold text-center mb-2">Welcome to TON Staking</h1>
-          <p className="text-center text-gray-600">
-            Stake 2 TON, earn 4 TON in just 4 minutes!
-          </p>
+          <p className="text-center text-gray-600">Stake 2 TON, earn 4 TON in just 6 hours!</p>
         </div>
 
         {/* Main Stats Card */}
@@ -33,8 +33,7 @@ const Index = () => {
             </div>
           </div>
 
-          {isStaking ? (
-            <div className="bg-ton-light rounded-xl p-4 mb-4">
+          {isStaking ? <div className="bg-ton-light rounded-xl p-4 mb-4">
               <div className="flex justify-between items-center mb-2">
                 <p className="text-gray-700 font-medium">Currently Staking</p>
                 <p className="text-ton-primary font-bold">{stakedAmount} TON</p>
@@ -44,29 +43,23 @@ const Index = () => {
                 <p className="text-ton-primary font-bold">{rewards.toFixed(4)} TON</p>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
-                <div 
-                  className="bg-ton-gradient h-2 rounded-full animate-pulse-glow"
-                  style={{ 
-                    width: `${(rewards / 2) * 100}%`,
-                    transition: 'width 1s ease-in-out' 
-                  }}
-                ></div>
+                <div className="bg-ton-gradient h-2 rounded-full animate-pulse-glow" style={{
+              width: `${rewards / 2 * 100}%`,
+              transition: 'width 1s ease-in-out'
+            }}></div>
               </div>
               <div className="flex justify-between text-xs text-gray-500">
                 <span>0 TON</span>
                 <span className="font-medium text-ton-primary">{timeRemaining}</span>
                 <span>2 TON</span>
               </div>
-            </div>
-          ) : (
-            <div className="bg-gray-50 rounded-xl p-6 mb-4 text-center">
+            </div> : <div className="bg-gray-50 rounded-xl p-6 mb-4 text-center">
               <p className="text-gray-700 mb-2">Start staking to earn rewards</p>
               <p className="text-xl font-bold text-ton-primary mb-4">Earn up to 100% APY</p>
               <Link to="/stake">
                 <Button className="ton-button w-full">Start Staking Now</Button>
               </Link>
-            </div>
-          )}
+            </div>}
         </div>
 
         {/* Features Section */}
@@ -161,8 +154,6 @@ const Index = () => {
         </div>
       </div>
       <Navigation />
-    </div>
-  );
+    </div>;
 };
-
 export default Index;

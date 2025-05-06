@@ -9,7 +9,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Loader } from "lucide-react";
+import { Loader, Coins } from "lucide-react";
 
 interface StakeConfirmationDialogProps {
   open: boolean;
@@ -30,7 +30,12 @@ const StakeConfirmationDialog: React.FC<StakeConfirmationDialogProps> = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Confirm Staking Transaction</DialogTitle>
+          <div className="flex items-center justify-center mb-2">
+            <div className="w-10 h-10 rounded-full bg-ton-gradient flex items-center justify-center mr-2">
+              <Coins className="text-white h-5 w-5" />
+            </div>
+            <DialogTitle className="text-xl">Stake TON</DialogTitle>
+          </div>
           <DialogDescription>
             Please review the staking details before proceeding.
           </DialogDescription>
@@ -65,7 +70,7 @@ const StakeConfirmationDialog: React.FC<StakeConfirmationDialogProps> = ({
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
-          <Button onClick={onConfirm} disabled={isLoading || balance < 2.5}>
+          <Button onClick={onConfirm} disabled={isLoading || balance < 2.5} className="bg-primary text-white">
             {isLoading ? (
               <>
                 <Loader className="mr-2 h-4 w-4 animate-spin" />

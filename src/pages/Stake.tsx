@@ -1,10 +1,9 @@
-
 import React, { useState } from 'react';
 import Navigation from '@/components/Navigation';
 import { useStaking } from '@/context/StakingContext';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { Link, Unlink, Loader } from 'lucide-react';
+import { Link, Unlink, Loader, Coins, Wallet } from 'lucide-react';
 import StakeConfirmationDialog from '@/components/StakeConfirmationDialog';
 import UnstakeConfirmationDialog from '@/components/UnstakeConfirmationDialog';
 
@@ -58,7 +57,12 @@ const Stake = () => {
     <div className="min-h-screen bg-sidebar text-sidebar-foreground pt-16 pb-20">
       <div className="max-w-md mx-auto px-4">
         <div className="mb-6 mt-4">
-          <h1 className="text-2xl font-bold text-center">Stake TON</h1>
+          <div className="flex items-center justify-center mb-2">
+            <div className="w-10 h-10 rounded-full bg-ton-gradient flex items-center justify-center mr-2">
+              <Coins className="text-white h-5 w-5" />
+            </div>
+            <h1 className="text-2xl font-bold">Stake TON</h1>
+          </div>
           <p className="text-center text-muted-foreground">
             Stake your TON and earn 100% returns over time
           </p>
@@ -66,7 +70,10 @@ const Stake = () => {
 
         {/* Wallet Connection Card */}
         <div className="mb-6 bg-card text-card-foreground rounded-2xl shadow-lg p-6 border border-border transition-all hover:shadow-xl animate-fade-in">
-          <h2 className="text-lg font-bold mb-4">Wallet Connection</h2>
+          <h2 className="text-lg font-bold mb-4 flex items-center">
+            <Wallet className="mr-2 h-5 w-5 text-primary" />
+            Wallet Connection
+          </h2>
           <div className="flex items-center justify-between mb-4">
             <div>
               {walletConnected ? (
@@ -112,7 +119,10 @@ const Stake = () => {
         {/* Staking Card */}
         <div className="bg-card text-card-foreground rounded-2xl shadow-lg p-6 border border-border transition-all hover:shadow-xl mb-6 animate-fade-in">
           <div className="mb-6">
-            <h2 className="text-lg font-bold mb-2">Staking Overview</h2>
+            <h2 className="text-lg font-bold mb-2 flex items-center">
+              <Coins className="mr-2 h-5 w-5 text-primary" />
+              Staking Overview
+            </h2>
             <div className="bg-muted rounded-xl p-4 mb-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>

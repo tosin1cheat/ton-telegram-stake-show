@@ -1,12 +1,12 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import Navigation from '@/components/Navigation';
 import { useStaking } from '@/context/StakingContext';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { Link } from 'lucide-react';
-import { Unlink } from 'lucide-react';
-import { Loader } from 'lucide-react';
+import { Link, Unlink, Loader } from 'lucide-react';
+import StakeConfirmationDialog from '@/components/StakeConfirmationDialog';
+import UnstakeConfirmationDialog from '@/components/UnstakeConfirmationDialog';
 
 const Stake = () => {
   const { 
@@ -23,6 +23,33 @@ const Stake = () => {
     disconnectWallet,
     isLoading
   } = useStaking();
+
+  // Dialog states
+  const [stakeDialogOpen, setStakeDialogOpen] = useState(false);
+  const [unstakeDialogOpen, setUnstakeDialogOpen] = useState(false);
+  
+  // Handlers for the dialog actions
+  const handleStakeClick = () => {
+    if (walletConnected && balance >= 2.5) {
+      setStakeDialogOpen(true);
+    }
+  };
+  
+  const handleUnstakeClick = () => {
+    if (canUnstake && balance >= 0.5) {
+      setUnstakeDialogOpen(true);
+    }
+  };
+  
+  const handleConfirmStake = () => {
+    stakeTokens();
+    setStakeDialogOpen(false);
+  };
+  
+  const handleConfirmUnstake = () => {
+    unstakeTokens();
+    setUnstakeDialogOpen(false);
+  };
 
   const progressPercentage = (rewards / 2) * 100;
   const canUnstake = isStaking && Date.now() >= (useStaking().stakingEndTime || 0);
@@ -124,7 +151,7 @@ const Stake = () => {
                 </div>
                 <Button 
                   className="bg-primary text-primary-foreground w-full" 
-                  onClick={unstakeTokens}
+                  onClick={handleUnstakeClick}
                   disabled={!canUnstake || isLoading || balance < 0.5}
                 >
                   {isLoading ? <Loader className="animate-spin mr-2" size={16} /> : null}
@@ -172,7 +199,7 @@ const Stake = () => {
                 </div>
                 <Button 
                   className="bg-primary text-primary-foreground w-full" 
-                  onClick={stakeTokens}
+                  onClick={handleStakeClick}
                   disabled={balance < 2.5 || !walletConnected || isLoading}
                 >
                   {isLoading ? <Loader className="animate-spin mr-2" size={16} /> : null}
@@ -240,6 +267,26 @@ const Stake = () => {
           </div>
         </div>
       </div>
+      
+      {/* Confirmation Dialogs */}
+      <StakeConfirmationDialog 
+        open={stakeDialogOpen}
+        onOpenChange={setStakeDialogOpen}
+        onConfirm={handleConfirmStake}
+        isLoading={isLoading}
+        balance={balance}
+      />
+      
+      <UnstakeConfirmationDialog
+        open={unstakeDialogOpen}
+        onOpenChange={setUnstakeDialogOpen}
+        onConfirm={handleConfirmUnstake}
+        isLoading={isLoading}
+        balance={balance}
+        stakedAmount={stakedAmount}
+        rewards={rewards}
+      />
+      
       <Navigation />
     </div>
   );

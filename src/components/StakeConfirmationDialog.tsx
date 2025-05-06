@@ -59,7 +59,11 @@ const StakeConfirmationDialog: React.FC<StakeConfirmationDialogProps> = ({
           </div>
           <div className="flex items-center justify-between">
             <span className="text-muted-foreground">Expected Return</span>
-            <span className="font-medium text-primary">4 TON</span>
+            <span className="font-medium text-primary">2 TON</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-muted-foreground">Total Return</span>
+            <span className="font-bold text-primary">4 TON</span>
           </div>
           <div className="flex items-center justify-between">
             <span className="text-muted-foreground">Duration</span>
